@@ -1,2 +1,2 @@
-# vatsalS3
-Custom repository for S3 file uploads.
+# vatsal
+Custom repository for many utility functions.

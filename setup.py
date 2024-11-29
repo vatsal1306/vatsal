@@ -26,8 +26,8 @@ def get_requirements() -> List[str]:
 
 # Set up the package
 setup(
-    name='vatsalS3',
-    version=get_version('vatsalS3'),
+    name='vatsal',
+    version=get_version('vatsal'),
     packages=find_packages(),
     description='Basic S3 operations',
     long_description=get_long_description(),
