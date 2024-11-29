@@ -1,6 +1,7 @@
 import os
-from setuptools import setup, find_packages
 from typing import Union, List
+
+from setuptools import setup, find_packages
 
 
 def get_version(package: str) -> Union[str, RuntimeError]:
@@ -29,18 +30,18 @@ setup(
     name='vatsal',
     version=get_version('vatsal'),
     packages=find_packages(),
-    description='Basic S3 operations',
+    description='Custom utility functions to reuse efficiently.',
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
     author='Vatsal Vadodaria',
     author_email='vatsal1399@gmail.com',
-    url='https://github.com/vatsal1306/vatsalS3',
+    url='https://github.com/vatsal1306/vatsal',
     install_requires=get_requirements(),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.11'
+        'Programming Language :: Python :: 3.10'
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.10',
 )
