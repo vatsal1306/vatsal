@@ -2,8 +2,8 @@
 
 ## Overview
 
-* A collection of reusable utility functions for various tasks, including [file operations](#file-operations) and [progress tracking](#progress-tracking).
-* View author details [here](#authors)
+* A collection of optimized reusable utility functions for various tasks.
+* View author details [at the bottom.](#authors)
 
 
 ## Installation
@@ -29,7 +29,8 @@ Import `utils.Path` class and use its methods for file operations.
 from vatsal.utils import Path
 
 # Validates path. If valid path, returns path in string, else returns FileNotFoundError.
-Path('/valid/path')
+obj = Path('/valid/path')
+print(obj)
 
 # Read file content. Optional mode and encoding params.
 content = Path.read('/valid/path')
@@ -39,7 +40,43 @@ Path.write('/valid/path', "Hello world!")
 
 # Append to file
 Path.append('/valid/path', "Append text.")
+
+# Get a list of all custom methods for Path .
+obj.__dir__()
 ```
+
+### Wrappers
+Use `Wrappers` class for using decorators.
+```python
+from vatsal.utils import Wrappers
+
+
+# Make any class method as a private method. Use private_method this as decorator, then that method can only be called internally by class. It cannot be used outside the class or by class object.
+class DemoClass:
+	@Wrappers.private_method
+	def func(self):
+		print("This is a private method.")
+		
+
+# Make any class as a singleton class. Singleton class is only initialized once. Wrapping @singleton on a class will make sure the class __init__ is only called once. On initialzing the class again, it will return the previously initialized object.
+@Wrappers.singleton
+class DemoClass:
+	def __init__(self):
+		print("Inside init method.")
+
+obj1 = DemoClass()  # This will print 'Inside init method.'
+obj2 = DemoClass()  # This will not print anything because DemoClass is already initialized once.
+```
+
+### Config
+Use `Config` class to read .ini file. It will read all the sections and return a variable with .ini data in key-value pairs (dictionary).
+```python
+from vatsal.utils import Config
+
+config = Config('/path/to/config.ini')
+print(config['key'])	# prints value for key.
+```
+
 ### Progress tracking
 
 Use the `ProgressPercentage` class for real time file upload data in bytes.

@@ -1,3 +1,4 @@
+import configparser
 import gzip
 import inspect
 import json
@@ -22,6 +23,9 @@ class Path(str):
         if not os.path.exists(val):
             raise FileNotFoundError(f"Path {val} does not exist.")
         return super().__new__(cls, val)
+
+    def __dir__(self):
+        return [attr for attr in self.__class__.__dict__.keys() if callable(getattr(self.__class__, attr)) and not attr.startswith('__')]
 
     @staticmethod
     def get_parent_dir(file_path: str) -> str:
@@ -131,6 +135,29 @@ class Wrappers:
             return instances[cls]
 
         return wrap
+
+
+@Wrappers.singleton
+class Config:
+    """ Class to read .ini configuration files. Import this in your module's __init__ file for efficient usage."""
+
+    def __init__(self, config_path: str):
+        """
+        Check if valid path and read .ini configurations. This is a singleton class, so it will be initialized only once.
+
+        :param config_path: Absolute path to .ini configuration file.
+        """
+        self.config_path = Path(config_path)
+        self._load()
+
+    def _load(self):
+        """ Reads all sections, iterate over all section and store config file values as key value pairs. """
+        config = configparser.ConfigParser()
+        config.read(self.config_path)
+        sections = config.sections()
+        for section in sections:
+            for key, value in config.items(section):
+                setattr(self, key, value)
 
 
 class ProgressPercentage:
