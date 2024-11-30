@@ -1,4 +1,5 @@
 import gzip
+import inspect
 import json
 import os
 import pickle
@@ -7,8 +8,40 @@ import threading
 from typing import Union
 
 
-class File:
-    """ Class for path and file related operations. """
+class Path(str):
+    """ Class for path and file related operations. Use Path('/valid/path/') for path validation."""
+
+    def __new__(cls, val: str):
+        """
+        Returns path string if input path is valid. FileNotFoundError if not a valid path. TypeError otherwise.
+
+        :param val: Absolute path to a file.
+        """
+        if not isinstance(val, str):
+            raise TypeError(f"Expected str, got {type(val).__name__}")
+        if not os.path.exists(val):
+            raise FileNotFoundError(f"Path {val} does not exist.")
+        return super().__new__(cls, val)
+
+    @staticmethod
+    def get_parent_dir(file_path: str) -> str:
+        return "\\".join(file_path.split("\\")[:-1])
+
+    @staticmethod
+    def create_dir_if_not_exists(dir_path: str):
+        if not os.path.exists(dir_path):
+            try:
+                os.makedirs(dir_path)
+            except OSError as e:
+                raise OSError(f"Failed to create directory {dir_path}: {e}")
+
+    @staticmethod
+    def create_file_if_not_exists(file_path: str):
+        if not os.path.exists(file_path):
+            try:
+                open(file_path, "w").close()
+            except OSError as e:
+                raise OSError(f"Failed to create file {file_path}: {e}")
 
     @staticmethod
     def read(file_path: str, mode: str = 'r', encoding: str = 'utf-8') -> Union[str, bytes]:
@@ -21,7 +54,7 @@ class File:
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError(
-                f"File {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
+                f"Path {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
 
         file_dir, file_name = os.path.split(file_path)
         file_ext = os.path.splitext(file_name)[1].lower()
@@ -51,7 +84,7 @@ class File:
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError(
-                f"File {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
+                f"Path {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
 
         file_dir, file_name = os.path.split(file_path)
         file_ext = os.path.splitext(file_name)[1].lower()
@@ -72,11 +105,32 @@ class File:
     def append(self, file_path, data: Union[str, bytes], encoding: str = 'utf-8'):
         self.write(file_path, data, mode='a', encoding=encoding)
 
-    def __str__(self):
-        return "Class for path and file related operations."
 
-    def __repr__(self):
-        return "Class for path and file related operations."
+class Wrappers:
+    @staticmethod
+    def private_method(func):
+        """ Wrap this to make a class method as a private method, i.e. can only be called internally by class,
+        not from outside class or by class object."""
+
+        def wrapper(*args, **kwargs):
+            frame = inspect.currentframe().f_back
+            if frame.f_locals.get('self') is None and func.__name__.startswith('_'):
+                raise ValueError("Access to private method is restricted.")
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    @staticmethod
+    def singleton(cls):
+        """ Wrap this on a class to make it a singleton class, i.e. only one instance of that class will be created. """
+        instances = dict()
+
+        def wrap(*args, **kwargs):
+            if cls not in instances:
+                instances[cls] = cls(*args, **kwargs)
+            return instances[cls]
+
+        return wrap
 
 
 class ProgressPercentage:

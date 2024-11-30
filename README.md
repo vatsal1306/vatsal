@@ -22,26 +22,23 @@ pip install vatsal
 
 ## Usage
 
-### File operations
-Import `utils.File` class and use its methods for file operations.
+### Path operations
+Import `utils.Path` class and use its methods for file operations.
 
 ```python
-from vatsal.utils import File
+from vatsal.utils import Path
 
-# Initialize a File object
-file = File('/path/to/file.txt')
+# Validates path. If valid path, returns path in string, else returns FileNotFoundError.
+Path('/valid/path')
 
-# Read file content
-content = file.read()
+# Read file content. Optional mode and encoding params.
+content = Path.read('/valid/path')
 
-# Write to file
-file.write('Hello, world!')
+# Write to file. Optional mode and encoding params.
+Path.write('/valid/path', "Hello world!")
 
 # Append to file
-file.append('Appended text')
-
-# Print file information
-print(file)
+Path.append('/valid/path', "Append text.")
 ```
 ### Progress tracking
 
