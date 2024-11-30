@@ -8,70 +8,75 @@ from typing import Union
 
 
 class File:
+    """ Class for path and file related operations. """
 
-    def __init__(self, file_path: str):
+    @staticmethod
+    def read(file_path: str, mode: str = 'r', encoding: str = 'utf-8') -> Union[str, bytes]:
         """
-        Initializes the File class object. Returns FileNotFoundError if file does not exist.
+        Reads the content of file. Returns a string or bytes.
 
         :param file_path: Absolute path to file.
+        :param mode: Mode to open the file. Defaults to 'r'.
+        :param encoding: Encoding mode. Defaults to 'utf-8'.
         """
-        self.file_path = file_path
         if not os.path.exists(file_path):
             raise FileNotFoundError(
                 f"File {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
 
-        self.file_dir, self.file_name = os.path.split(file_path)
-        self.file_ext = os.path.splitext(self.file_name)[1].lower()
+        file_dir, file_name = os.path.split(file_path)
+        file_ext = os.path.splitext(file_name)[1].lower()
 
-    def read(self, mode: str = 'r', encoding: str = 'utf-8') -> Union[str, bytes]:
-        """
-        Reads the content of file. Returns a string or bytes.
-
-        :param mode: Mode to open the file. Defaults to 'r'.
-        :param encoding: Encoding mode. Defaults to 'utf-8'.
-        """
-        if self.file_ext in ['.gz', '.gzip']:
-            with gzip.open(self.file_path, mode, encoding=encoding) as file:
+        if file_ext in ['.gz', '.gzip']:
+            with gzip.open(file_path, mode, encoding=encoding) as file:
                 return file.read()
-        elif self.file_ext == '.json':
-            with open(self.file_path, mode, encoding=encoding) as file:
+        elif file_ext == '.json':
+            with open(file_path, mode, encoding=encoding) as file:
                 return json.load(file)
-        elif self.file_ext == '.pickle':
-            with open(self.file_path, mode, encoding=encoding) as file:
+        elif file_ext == '.pickle':
+            with open(file_path, mode, encoding=encoding) as file:
                 return pickle.load(file)
         else:
-            with open(self.file_path, mode, encoding=encoding) as file:
+            with open(file_path, mode, encoding=encoding) as file:
                 return file.read()
 
-    def write(self, data: Union[str, bytes], mode: str = 'w', encoding: str = 'utf-8'):
+    @staticmethod
+    def write(file_path: str, data: Union[str, bytes], mode: str = 'w', encoding: str = 'utf-8'):
         """
         Writes the content of file. Returns a string or bytes.
 
+        :param file_path: Absolute path to file.
         :param data: Data to write to the file.
         :param mode: Mode to open the file. Defaults to 'w'.
         :param encoding: Encoding mode. Defaults to 'utf-8'.
         """
-        if self.file_ext in ['.gz', '.gzip']:
-            with gzip.open(self.file_path, mode, encoding=encoding) as file:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(
+                f"File {file_path} does not exist. If you are passing a relative path, please pass the absolute path.")
+
+        file_dir, file_name = os.path.split(file_path)
+        file_ext = os.path.splitext(file_name)[1].lower()
+
+        if file_ext in ['.gz', '.gzip']:
+            with gzip.open(file_path, mode, encoding=encoding) as file:
                 file.write(data)
-        elif self.file_ext == '.json':
-            with open(self.file_path, mode, encoding=encoding) as file:
+        elif file_ext == '.json':
+            with open(file_path, mode, encoding=encoding) as file:
                 json.dump(data, file)
-        elif self.file_ext == '.pickle':
-            with open(self.file_path, mode, encoding=encoding) as file:
+        elif file_ext == '.pickle':
+            with open(file_path, mode, encoding=encoding) as file:
                 pickle.dump(data, file)
         else:
-            with open(self.file_path, mode, encoding=encoding) as file:
+            with open(file_path, mode, encoding=encoding) as file:
                 file.write(data)
 
-    def append(self, data: Union[str, bytes], encoding: str = 'utf-8'):
-        self.write(data, mode='a', encoding=encoding)
+    def append(self, file_path, data: Union[str, bytes], encoding: str = 'utf-8'):
+        self.write(file_path, data, mode='a', encoding=encoding)
 
     def __str__(self):
-        return f'File: {self.file_path}'
+        return "Class for path and file related operations."
 
     def __repr__(self):
-        return f'File({self.file_path})'
+        return "Class for path and file related operations."
 
 
 class ProgressPercentage:
