@@ -1,18 +1,8 @@
-import os
-from typing import Union, List
+from typing import List
 
 from setuptools import setup, find_packages
 
 from vatsal import __version__, __author__, __email__
-
-
-def get_version(package: str) -> Union[str, RuntimeError]:
-    """Get the version number from the __init__.py file."""
-    init_py = open(os.path.join(package, '__init__.py')).read()
-    for line in init_py.split('\n'):
-        if line.startswith('__version__'):
-            return line.strip().split()[-1].strip('\'")')
-    raise RuntimeError("Unable to find version string.")
 
 
 def get_long_description() -> str:
