@@ -3,6 +3,8 @@ from typing import Union, List
 
 from setuptools import setup, find_packages
 
+from vatsal import __version__, __author__, __email__
+
 
 def get_version(package: str) -> Union[str, RuntimeError]:
     """Get the version number from the __init__.py file."""
@@ -28,13 +30,13 @@ def get_requirements() -> List[str]:
 # Set up the package
 setup(
     name='vatsal',
-    version=get_version('vatsal'),
+    version=__version__,
     packages=find_packages(),
     description='Custom utility functions to reuse efficiently.',
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
-    author='Vatsal Vadodaria',
-    author_email='vatsal1399@gmail.com',
+    author=__author__,
+    author_email=__email__,
     url='https://github.com/vatsal1306/vatsal',
     install_requires=get_requirements(),
     classifiers=[
